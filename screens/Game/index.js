@@ -12,7 +12,9 @@ export default class Home extends Component {
 	    size: 2
 
  		};
-
+        componentWillMount(){
+          this.generateNewRound();
+        }
  		componentDidMount(){
  			this.interval= setInterval(()=> {
  				console.log("timeLeft", this.state.timeLeft)
@@ -24,6 +26,22 @@ export default class Home extends Component {
  		componentWillUnmount(){
 			clearInterval(this.interval);
  			}
+ 			 generateSizeIndex = () => {
+    return Math.floor(Math.random() * this.state.size);
+  };
+
+  generateNewRound = () => {
+    const RGB = RBGgenerator();
+    const mRGB = mutateRGB(RGB);
+    const { points } = this.state;
+    this.setState({
+      diffTileIndex: [this.generateSizeIndex(), this.generateSizeIndex()],
+      diffTileColor: `rgb(${mRGB.r}, ${mRGB.g}, ${mRGB.b})`,
+      rgb: RGB,
+      size: Math.min(Math.max(Math.round(Math.sqrt(points)), 2), 4)
+    });
+  };
+
  render() {
  	const { rgb }  = this.state,
 	 	 { width } = Dimensions.get("window"),
