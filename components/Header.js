@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 const Header = ({fontSize}) => (
- <View style={{ flexDirection: "row",marginBottom: 120 }}>
+ <View style={{ flexDirection: "row",marginBottom: 70, marginTop: 50 }}>
    <Text style={[styles.header, {  color: "#E64C3C",fontSize }]}>c</Text>
    <Text style={[styles.header, { color: "#E57E31", fontSize }]}>o</Text>
    <Text style={[styles.header, { color: "#F1C431", fontSize }]}>l</Text>
