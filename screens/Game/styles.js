@@ -35,5 +35,21 @@ export default StyleSheet.create({
   	marginLeft: 15,
   	width: 50,
   	height: 50
+  },
+  pausedContainer: {
+  	flex: 1,
+  	alignItems: "center",
+  	justifyContent: "center"
+  },
+  pausedIcon: {
+  	 width: 80,
+  	 height: 80
+  },
+  pausedText: {
+  	fontFamily: "dogbyte",
+  	fontSize: 60,
+  	color: "white",
+  	marginTop: 15,
+  	textAlign: "center"
   }
 });

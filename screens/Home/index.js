@@ -1,6 +1,7 @@
-import React, { Component, Fragment} from 'react'
+import React, { Component, Fragment} from 'react';
 import { View, Text, Image, TouchableOpacity  } from 'react-native';
-import { Header } from '../../components'
+import { Audio } from 'expo-av';
+import { Header } from '../../components';
 import styles from "./styles";
 
 
@@ -13,6 +14,26 @@ state = {
  toggleSound = () => {
  	this.setState({isSoundOn: !this.state.isSoundOn});
  }
+ async componentWillMount(){
+ 	this.backgroundMusic = new Audio.Sound();
+ 	  this.buttonFX = new Audio.Sound();
+
+ 	try { 
+ await this.backgroundMusic.loadAsync(
+      require("../../assets/music/Komiku_Mushrooms.mp3")
+    );
+  await this.buttonFX.loadAsync(
+       require("../../assets/sfx/button.wav")
+    );
+    await this.backgroundMusic.setIsLoopingAsync(true);
+    await this.backgroundMusic.playAsync();
+
+
+    // Your sound is playing
+ 	} catch { 
+     console.log("error")
+ 	}
+ }
 	render(){
 		const soundSource = this.state.isSoundOn === true
 		     				? require("../../assets/icons/speaker-on.png")
@@ -21,7 +42,9 @@ state = {
 			<View style={styles.container}>
 			<Header/>
 			<TouchableOpacity onPress={e => {
-				this.onPlayPress
+				this.onPlayPress;
+				this.buttonFX.replayAsync();
+				this.backgroundMusic.stopAsync();
 				this.props.navigation.navigate('Game');
 			}} style={{flexDirection:"row", alignItems: "center"}}>
 			<Image

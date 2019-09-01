@@ -3,6 +3,7 @@ import { View, Dimensions, TouchableOpacity,Text, Image} from "react-native";
 import { Header } from "../../components";
 import styles from "./styles";
 import { RBGgenerator, mutateRGB } from '../../utilities';
+import { Audio } from 'expo-av';
 
 export default class Home extends Component {
 
@@ -13,16 +14,39 @@ export default class Home extends Component {
 	    size: 2,
 	    diffTileIndex: {},
 	    diffTileColor: "",
-		gameState: 'INGAME'
+		  gameState: 'INGAME'
  		};
-        componentWillMount(){
+        async componentWillMount(){
           this.generateNewRound();
-        }
+          this.backgroundMusic = new Audio.Sound();
+           this.rightTile = new Audio.Sound();
+            try {
+                await this.backgroundMusic.loadAsync(
+                require("../../assets/music/Komiku_BattleOfPogs.mp3")
+                );
+                await this.rightTile.loadAsync(
+                  require("../../assets/sfx/tile_tap.wav")
+                  );
+                await this.backgroundMusic.setIsLoopingAsync(true);
+                await this.backgroundMusic.playAsync();
+                // Your sound is playing!
+                 } catch (error) {
+     console.log("error")
+                 }
+               }
  		componentDidMount(){
  			this.interval= setInterval(()=> {
- 				this.state.gameState === "INGAME" && this.setState(state => ({
+ 				if(this.state.gameState === "INGAME") {
+                   if(this.state.timeLeft <= 0 ) {
+                   	this.setState(state => ({
+                        gameState: "LOST"
+                   	}))
+                   } else {
+ 				 this.setState(state => ({
  					timeLeft: state.timeLeft - 1
  				}))
+ 			}
+ 			}
  			}, 1000)
  		}
  		componentWillUnmount(){
@@ -46,7 +70,8 @@ export default class Home extends Component {
   
   onTilePress =  (rowIndex, columnIndex) => {
   	 if(rowIndex == this.state.diffTileIndex[0] && columnIndex == this.state.diffTileIndex[1]){
-  	 	this.setState({
+  	 	this.rightTile.replayAsync();
+      this.setState({
   	 		points: this.state.points + 1,
   	 		timeLeft: this.state.timeLeft + 3
   	 	})
@@ -120,7 +145,7 @@ export default class Home extends Component {
           	</TouchableOpacity>
           	))}
           </View>
-       	)): 
+       	)): gameState === "PAUSED" ?
        (
    	 <View style={styles.pausedContainer}>
        	<Image
@@ -129,7 +154,16 @@ export default class Home extends Component {
        	/>
       	<Text style={styles.pausedText}>COVFEFE BREAK</Text>
     	</View>
- 	)
+ 	) : 
+       (
+      <View style={styles.pausedContainer}>
+       	<Image
+          	source={require("../../assets/icons/dead.png")}
+          	style={styles.pausedIcon}
+       	/>
+       	<Text style={styles.pausedText}>ur dead</Text>
+  	 </View>
+       	)
 	}
               </View>
 
